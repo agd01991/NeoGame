@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NeoGame</string>
+    <string name="game_over">Game Over</string>
+    <string name="restart">Restart</string>
+</resources>
