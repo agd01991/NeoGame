@@ -1,5 +1,6 @@
-//GameActivity
+//GameView.kt
 package com.example.neogame
+
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -10,7 +11,6 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import kotlin.random.Random
-import android.graphics.Bitmap
 
 class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback, View.OnTouchListener {
     private var thread: GameThread? = null
@@ -21,11 +21,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
     private var isMovingRight: Boolean = false
     private val squareCreationDelay = 1000L // Настройте значение задержки по необходимости (в миллисекундах)
     private val playerImage = BitmapFactory.decodeResource(resources, R.drawable.neoboy)
-    private val meteorImage: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.meteor)
+    private val meteorImage = BitmapFactory.decodeResource(resources, R.drawable.meteor)
 
     val squares: MutableList<Square> = mutableListOf()
-
-
 
     init {
         holder.addCallback(this)
@@ -33,29 +31,12 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         setOnTouchListener(this)
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
+    override fun surfaceCreated(holder: SurfaceHolder) {}
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         squareX = (width / 2).toFloat()
         squareY = 600f // Новое начальное значение squareY
-        thread = GameThread(holder, this)
-        thread?.running = true
-        thread?.start()
-        for (i in 0 until 100) {
-            postDelayed(
-                {
-                    val square = Square(
-                        Random.nextFloat() * width,
-                        -100f,
-                        Random.nextInt(50, 150).toFloat(),
-                        Random.nextInt(3, 8).toFloat()
-                    )
-                    squares.add(square)
-                },
-                i * squareCreationDelay
-            )
-        }
     }
-
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         var retry = true
@@ -82,8 +63,6 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         }
     }
 
-
-
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -104,13 +83,13 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
     }
 
     private fun moveSquareLeft() {
-        if (squareX - 10 >= 0) {
+        if (squareX - 10 >= -50) {
             squareX -= 10
         }
     }
 
     private fun moveSquareRight() {
-        if (squareX + 10 <= width) {
+        if (squareX + 10 <= width - 50) {
             squareX += 10
         }
     }
@@ -140,8 +119,33 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
 
             // Проверка столкновения с игроком
             if (square.intersects(squareX, squareY - 50, squareX + 100, squareY + 50)) {
-                thread?.running = false // Остановка игры при столкновении
+                gameOver()
             }
+        }
+    }
+
+    private fun gameOver() {
+        thread?.running = false // Остановка игры
+
+    }
+
+    fun startGame() {
+        thread = GameThread(holder, this)
+        thread?.running = true
+        thread?.start()
+        for (i in 0 until 100) {
+            postDelayed(
+                {
+                    val square = Square(
+                        Random.nextFloat() * width,
+                        -100f,
+                        Random.nextInt(50, 150).toFloat(),
+                        Random.nextInt(3, 8).toFloat()
+                    )
+                    squares.add(square)
+                },
+                i * squareCreationDelay
+            )
         }
     }
 }

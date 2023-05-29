@@ -1,4 +1,4 @@
-//GameThread
+//GameThread.kt
 package com.example.neogame
 
 import android.graphics.Canvas

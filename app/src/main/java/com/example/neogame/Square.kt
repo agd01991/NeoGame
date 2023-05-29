@@ -1,4 +1,4 @@
-//Square
+//Square.kt
 package com.example.neogame
 
 import android.graphics.RectF
