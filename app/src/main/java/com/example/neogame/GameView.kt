@@ -11,10 +11,12 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import kotlin.random.Random
+import kotlin.concurrent.fixedRateTimer
 
 class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback, View.OnTouchListener {
     private var thread: GameThread? = null
     private val squarePaint: Paint = Paint()
+    private val scorePaint: Paint = Paint()
     private var squareX: Float = 0f
     private var squareY: Float = 0f
     private var isMovingLeft: Boolean = false
@@ -24,11 +26,19 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
     private val meteorImage = BitmapFactory.decodeResource(resources, R.drawable.meteor)
 
     val squares: MutableList<Square> = mutableListOf()
+    private var score: Int = 0
 
     init {
         holder.addCallback(this)
         squarePaint.color = Color.RED
+        scorePaint.color = Color.BLACK
+        scorePaint.textSize = 48f
         setOnTouchListener(this)
+
+        // Запустить таймер для увеличения счетчика очков каждую секунду
+        fixedRateTimer("ScoreTimer", false, 1000L, 1000L) {
+            score++
+        }
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {}
@@ -61,6 +71,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
             val square = iterator.next()
             canvas.drawBitmap(meteorImage, null, square.rect, null)
         }
+
+        // Отрисовка счетчика очков
+        canvas.drawText("Score: $score", width - 300f, 80f, scorePaint)
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -149,3 +162,4 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         }
     }
 }
+
