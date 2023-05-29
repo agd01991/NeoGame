@@ -35,10 +35,6 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         scorePaint.textSize = 48f
         setOnTouchListener(this)
 
-        // Запустить таймер для увеличения счетчика очков каждую секунду
-        fixedRateTimer("ScoreTimer", false, 1000L, 1000L) {
-            score++
-        }
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {}
@@ -146,6 +142,11 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         thread = GameThread(holder, this)
         thread?.running = true
         thread?.start()
+
+        // Запустить таймер для увеличения счетчика очков каждую секунду
+        fixedRateTimer("ScoreTimer", false, 1000L, 1000L) {
+            score++
+        }
         for (i in 0 until 100) {
             postDelayed(
                 {
