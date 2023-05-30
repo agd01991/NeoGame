@@ -34,9 +34,19 @@ class MainActivity : Activity() {
         startButton.setOnClickListener {
             startGame()
         }
+        restartButton.setOnClickListener {
+            restartGame()
+        }
     }
 
     private fun startGame() {
+        gameView.visibility = View.VISIBLE
+        startButton.visibility = View.GONE
+        gameOverText.visibility = View.GONE
+        restartButton.visibility = View.GONE
+        gameView.startGame()
+    }
+    private fun restartGame() {
         gameView.visibility = View.VISIBLE
         startButton.visibility = View.GONE
         gameOverText.visibility = View.GONE

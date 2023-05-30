@@ -1,15 +1,21 @@
 //GameView.kt
 package com.example.neogame
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.TextView
 import kotlin.random.Random
 import kotlin.concurrent.fixedRateTimer
 
@@ -24,6 +30,14 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
     private val squareCreationDelay = 1000L // Настройте значение задержки по необходимости (в миллисекундах)
     private val playerImage = BitmapFactory.decodeResource(resources, R.drawable.neoboy)
     private val meteorImage = BitmapFactory.decodeResource(resources, R.drawable.meteor)
+    private lateinit var mainHandler: Handler
+    private var gameContainer: FrameLayout
+    private var startButton: Button
+    private var gameOverText: TextView
+    private var restartButton: Button
+    private val gameOverRunnable: Runnable = Runnable {
+        showGameOverUI()
+    }
 
     val squares: MutableList<Square> = mutableListOf()
     private var score: Int = 0
@@ -34,8 +48,28 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         scorePaint.color = Color.BLACK
         scorePaint.textSize = 48f
         setOnTouchListener(this)
+        gameContainer = (context as Activity).findViewById(R.id.gameContainer)
+        startButton = context.findViewById(R.id.startButton)
+        gameOverText = context.findViewById(R.id.gameOverText)
+        restartButton = context.findViewById(R.id.restartButton)
+
 
     }
+
+    private fun gameOver() {
+        thread?.running = false // Остановка игры
+
+        // Показать экран "Game Over" с задержкой 1 секунда
+        mainHandler.postDelayed(gameOverRunnable, 1000)
+    }
+
+    private fun showGameOverUI() {
+        gameContainer.visibility = View.GONE
+        startButton.visibility = View.GONE
+        gameOverText.visibility = View.VISIBLE
+        restartButton.visibility = View.VISIBLE
+    }
+
 
     override fun surfaceCreated(holder: SurfaceHolder) {}
 
@@ -133,10 +167,10 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         }
     }
 
-    private fun gameOver() {
-        thread?.running = false // Остановка игры
-
-    }
+//    private fun gameOver() {
+//        thread?.running = false // Остановка игры
+//
+//    }
 
     fun startGame() {
         thread = GameThread(holder, this)
@@ -161,6 +195,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
                 i * squareCreationDelay
             )
         }
+        mainHandler = Handler(Looper.getMainLooper())
     }
 }
 
