@@ -16,6 +16,7 @@ class MainActivity : Activity() {
     private lateinit var startButton: Button
     private lateinit var gameOverText: TextView
     private lateinit var restartButton: Button
+    private lateinit var scoreText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,7 @@ class MainActivity : Activity() {
         startButton = findViewById(R.id.startButton)
         gameOverText = findViewById(R.id.gameOverText)
         restartButton = findViewById(R.id.restartButton)
+        scoreText = findViewById(R.id.scoreText)
 
         startButton.setOnClickListener {
             startGame()
@@ -44,13 +46,16 @@ class MainActivity : Activity() {
         startButton.visibility = View.GONE
         gameOverText.visibility = View.GONE
         restartButton.visibility = View.GONE
+        scoreText.visibility = View.GONE
         gameView.startGame()
     }
+
     private fun restartGame() {
         gameView.visibility = View.VISIBLE
         startButton.visibility = View.GONE
         gameOverText.visibility = View.GONE
         restartButton.visibility = View.GONE
+        scoreText.visibility = View.GONE
         gameView.startGame()
     }
 }

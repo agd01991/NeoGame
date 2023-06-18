@@ -35,6 +35,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
     private var startButton: Button
     private var gameOverText: TextView
     private var restartButton: Button
+    private var scoreText: TextView
     private val gameOverRunnable: Runnable = Runnable {
         showGameOverUI()
     }
@@ -52,6 +53,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         startButton = context.findViewById(R.id.startButton)
         gameOverText = context.findViewById(R.id.gameOverText)
         restartButton = context.findViewById(R.id.restartButton)
+        scoreText = context.findViewById(R.id.scoreText)
 
 
     }
@@ -60,22 +62,26 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
         thread?.running = false // Остановка игры
 
         // Показать экран "Game Over" с задержкой 1 секунда
-        mainHandler.postDelayed(gameOverRunnable, 1000)
-    }
+        mainHandler.postDelayed(gameOverRunnable, 1000)}
 
-    private fun showGameOverUI() {
+        private fun showGameOverUI() {
         gameContainer.visibility = View.GONE
         startButton.visibility = View.GONE
         gameOverText.visibility = View.VISIBLE
         restartButton.visibility = View.VISIBLE
+        scoreText.text = "Score: $score"
+        scoreText.visibility = View.VISIBLE
     }
+
+
+
 
 
     override fun surfaceCreated(holder: SurfaceHolder) {}
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         squareX = (width / 2).toFloat()
-        squareY = 600f // Новое начальное значение squareY
+        squareY = height.toFloat() + 50f - playerImage.height
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -173,6 +179,13 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
 //    }
 
     fun startGame() {
+        score = 0
+        squares.clear()
+        gameOverText.visibility = View.GONE
+        restartButton.visibility = View.GONE
+        scoreText.visibility = View.GONE
+        gameContainer.visibility = View.VISIBLE
+        startButton.visibility = View.GONE
         thread = GameThread(holder, this)
         thread?.running = true
         thread?.start()

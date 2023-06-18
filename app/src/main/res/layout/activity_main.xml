@@ -19,11 +19,21 @@
         android:textSize="24sp"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameOverText"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textSize="18sp"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/restartButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gameOverText"
+        android:layout_below="@id/scoreText"
         android:layout_centerHorizontal="true"
         android:text="Restart"
         android:visibility="gone" />
